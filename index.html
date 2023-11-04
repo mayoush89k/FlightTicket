@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Flight Tickets</title>
+  </head>
+  <body>
+    <section id="main-Container">
+      <!-- 1.1 Login Form -->
+      <section id="logInContainer" class="hideBox">
+        <form action="login" id="loginForm">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+          <div class="error-message" id="nameError"></div>
+          <label for="email">Email:</label>
+          <input type="text" id="email" name="email" required />
+          <div class="error-message" id="emailError"></div>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+          <div class="error-message" id="passwordError"></div>
+          <br />
+          <section class="flexed">
+            <input type="checkbox" id="admin" name="admin" />
+            <label for="admin">Check if user is an Admin</label>
+          </section>
+          <!-- 1.2 log in button -->
+          <input type="submit" value="Login" id="login" />
+        </form>
+      </section>
+
+      <!-- flight cards list -->
+      <section id="flightPage">
+        <button id="logout">Log out</button>
+        <h3 id="savedName"></h3>
+        <section class="flexed" id="searchBar">
+          <select id="sort">
+            <option value="0" selected>Sort By</option>
+            <option value="price">Price</option>
+          </select>
+          <input type="text" placeholder="Search" id="searchInput" />
+          <button id="addNewFlight">Add More Flights</button>
+          <button id="cart">Cart</button>
+        </section>
+        <section id="flightList" class="flexed"></section>
+      </section>
+      <section id="cartList">
+      </section>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>

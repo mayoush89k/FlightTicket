@@ -132,7 +132,7 @@ button {
   color: blue;
   display: grid;
   grid-template-columns: repeat(4, minmax(10%, 1fr));
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-rows: repeat(auto, 1fr);
   gap: 10px;
   grid-template-areas: "flightFromLabel flightFrom flightToLabel flightTo"
   "flightDepartLabel flightDepart flightReturnLabel flightReturn "

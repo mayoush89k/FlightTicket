@@ -1,79 +1,51 @@
 const database = {
-  usersList: {
-    name: "Mayoush",
-    email: "love.god89@hotmail.com",
-    password: "$2a$10$3n5AZL6l",
-    cart: [
-      {
-        from: "tel aviv",
-        to: "amsterdam",
-        price: 40,
-        dates: [
-          { depart: new Date("24.11.2023") },
-          { return: new Date("1.12.2023") },
-        ],
-      },
-      {
-        from: "tel aviv",
-        to: "london",
-        price: 75,
-        dates: [
-          { depart: new Date("28.11.2023") },
-          { return: new Date("12.12.2023") },
-        ],
-      },
-    ],
-  },
-  adminList: {
-    name: "May",
-    email: "mayoush89;@gmail.com",
-    password: "123abC?#",
-  },
+  usersList: {},
+  adminList: {},
   flightList: [
     {
       from: "tel aviv",
       to: "amsterdam",
       price: 40,
-      dates: [
-        { depart: new Date("24.11.2023") },
-        { return: new Date("1.12.2023") },
-      ],
+      dates: {
+        depart: new Date("11.24.2023"),
+        returns: new Date("01.12.2023"),
+      },
     },
     {
       from: "tel aviv",
       to: "london",
       price: 75,
-      dates: [
-        { depart: new Date("28.11.2023") },
-        { return: new Date("12.12.2023") },
-      ],
+      dates: {
+        depart: new Date("11.28.2023"),
+        returns: new Date("12.12.2023"),
+      },
     },
     {
       from: "Athens",
       to: "Prague",
       price: 95,
-      dates: [
-        { depart: new Date("28.11.2023") },
-        { return: new Date("12.12.2023") },
-      ],
+      dates: {
+        depart: new Date("11.28.2023"),
+        returns: new Date("12.12.2023"),
+      },
     },
     {
       from: "Berlin",
       to: "Prague",
       price: 22,
-      dates: [
-        { depart: new Date("28.11.2023") },
-        { return: new Date("12.12.2023") },
-      ],
+      dates: {
+        depart: new Date("11.28.2023"),
+        returns: new Date("12.12.2023"),
+      },
     },
     {
       from: "London",
       to: "Berlin",
       price: 100,
-      dates: [
-        { depart: new Date("28.11.2023") },
-        { return: new Date("12.12.2023") },
-      ],
+      dates: {
+        depart: new Date("11.28.2023"),
+        returns: new Date("12.12.2023"),
+      },
     },
   ],
 };
@@ -87,9 +59,9 @@ const passwordInput = document.querySelector("#password");
 const isAdminInput = document.querySelector("#admin");
 
 // task 1. 2.2
-let isAdmin = false; //isAdminInput.checked;
+let isAdmin = false;
 let isValid = true;
-let userDB = isAdmin ? database.adminList : database.usersList;
+let userDB = {};
 
 // task 1.1.1 checkbox changes save to variable
 isAdminInput.addEventListener("change", () => (isAdmin = isAdminInput.checked));
@@ -137,10 +109,14 @@ function checkValidation(e) {
   if (isAdmin && isValid) {
     database.usersList = {};
     database.adminList = currentObject;
+    userDB = isAdmin ? database.adminList : database.usersList;
+    flightListPage([...database.flightList]);
     logInContainer.classList.add("hideBox");
-  } else {
+  } else if (isValid && !isAdmin) {
     database.adminList = {};
     database.usersList = currentObject;
+    userDB = isAdmin ? database.adminList : database.usersList;
+    flightListPage([...database.flightList]);
     logInContainer.classList.add("hideBox");
   }
 }
@@ -156,9 +132,16 @@ function checkValidation(e) {
 // task 1.3.1 logout button
 const logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
-  loginForm.classList.remove("hideBox");
+  logInContainer.classList.remove("hideBox");
+  flightPage.classList.add("hideBox");
+
   database.adminList = {};
   database.usersList = {};
+
+  nameInput.value = "";
+  emailInput.value = "";
+  passwordInput.value = "";
+  isAdminInput.checked = false;
 });
 
 // DOM Catcher
@@ -170,8 +153,6 @@ const cartBtn = document.getElementById("cart");
 const searchInput = document.getElementById("searchInput");
 const sortSelect = document.getElementById("sort");
 const cartListContainer = document.getElementById("cartList");
-
-flightListPage([...database.flightList]);
 
 function flightListPage(flightsList) {
   // reset page to be empty
@@ -236,14 +217,26 @@ function displayFlightCard(flight) {
   flightDepartLabel.style.fontWeight = "bold";
 
   const flightDepart = document.createElement("section");
-  flightDepart.innerText = flight.dates[0].depart;
+  const departDate = flight.dates.depart;
+  flightDepart.innerText =
+    departDate.getFullYear() +
+    "/" +
+    departDate.getMonth() +
+    "/" +
+    departDate.getDay();
 
   const flightReturnLabel = document.createElement("label");
   flightReturnLabel.innerText = "Return: ";
   flightReturnLabel.style.fontWeight = "bold";
 
   const flightReturn = document.createElement("section");
-  flightReturn.innerText = flight.dates[0].return;
+  const returnsDate = flight.dates.returns;
+  flightReturn.innerText =
+    returnsDate.getFullYear() +
+    "/" +
+    returnsDate.getMonth() +
+    "/" +
+    returnsDate.getDay();
 
   // task 4.1 add flight to cart for user only
   const addToCartBtn = document.createElement("button");
@@ -312,11 +305,11 @@ function showCartListPage() {
   const cartItemsList = document.createElement("section");
   cartItemsList.classList.add("cartItemsList");
 
-  if (userDB.cart == undefined) {
-    const cartItems = document.createElement("section");
-    cartItems.setAttribute("id", "cartCard");
-    cartItems.innerText = "Your Cart is Empty";
-    cartListContainer.append(backToFlightList, cart, cartItems);
+  if (userDB.cart == undefined || userDB.cart.length == 0) {
+    const emptyCartItems = document.createElement("section");
+    emptyCartItems.setAttribute("id", "cartCard");
+    emptyCartItems.innerText = "Your Cart is Empty";
+    cartListContainer.append(backToFlightList, cart, emptyCartItems);
   } else {
     userDB.cart.map((item) => {
       const cartItems = document.createElement("section");
@@ -355,7 +348,13 @@ function showCartListPage() {
       flightDepartLabel.classList.add("flightDepartLabel");
 
       const flightDepart = document.createElement("section");
-      flightDepart.innerText = item.dates[0].depart;
+      const departDate = item.dates.depart;
+      flightDepart.innerText =
+        departDate.getFullYear() +
+        "/" +
+        departDate.getMonth() +
+        "/" +
+        departDate.getDay();
       flightDepart.classList.add("flightDepart");
 
       const flightReturnLabel = document.createElement("label");
@@ -364,12 +363,18 @@ function showCartListPage() {
       flightReturnLabel.classList.add("flightReturnLabel");
 
       const flightReturn = document.createElement("section");
-      flightReturn.innerText = item.dates[0].return;
+      const returnsDate = item.dates.returns;
+      flightReturn.innerText =
+        returnsDate.getFullYear() +
+        "/" +
+        returnsDate.getMonth() +
+        "/" +
+        returnsDate.getDay();
       flightReturn.classList.add("flightReturn");
 
       const flightTravelers = document.createElement("input");
       flightTravelers.type = "number";
-      flightTravelers.setAttribute("placeholder" , "Number Of Travelers")
+      flightTravelers.setAttribute("placeholder", "Number Of Travelers");
       flightTravelers.innerText = item.Travelers;
       flightTravelers.classList.add("flightTravelers");
 
@@ -387,16 +392,16 @@ function showCartListPage() {
       // 4.3 Booking Flight
       const BookFlightBtn = document.createElement("button");
       BookFlightBtn.textContent = "Book Flight";
-      BookFlightBtn.setAttribute(
-        "id",
-        `book${cartItemsList.children.length}`
-      );
+      BookFlightBtn.setAttribute("id", `book${cartItemsList.children.length}`);
       BookFlightBtn.addEventListener("click", (e) => {
-        const numberOfTravelers = Number(flightTravelers.value) ? flightTravelers.value : 1
-        const TotalPrice = item.price * numberOfTravelers
-        alert(`Total Price is ${TotalPrice}NIS \n flight Successfully Booked`)
-        userDB.BookedList == undefined ? userDB.BookedList = [item] : userDB.BookedList.push(item) 
-        console.log(userDB);
+        const numberOfTravelers = Number(flightTravelers.value)
+          ? flightTravelers.value
+          : 1;
+        const TotalPrice = item.price * numberOfTravelers;
+        alert(`Total Price is ${TotalPrice}NIS \n flight Successfully Booked`);
+        userDB.BookedList == undefined
+          ? (userDB.BookedList = [item])
+          : userDB.BookedList.push(item);
         userDB.cart.splice(e.target.id.charAt(3), 1);
         showCartListPage();
       });
